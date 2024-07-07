@@ -1,0 +1,98 @@
+<% layout("/layouts/boilerplate.ejs") %>
+    <div class="row mt-3">
+        <div class="col-8 offset-3">
+            <h3>
+                <%= data.title %>
+            </h3>
+        </div>
+        <div class="listing-card">
+            <div class="offset-3 col-6 show-card listing-card">
+                <img src="<%= data.image.url %>" class="card-img-top show-img" alt="Listing_img">
+                <div class="card-body">
+                    <br>
+                    <p class="card-text"><i>
+                            <%= data.owner.username %>
+                        </i></p>
+                    <p class="card-text">
+                        <%= data.description %>
+                    </p>
+                    <p class="card-text">
+                        &#x20B9; <%= data.price %> <br>
+                            <%= data.location %> <br>
+                                <%= data.country %> <br>
+                    </p>
+                </div>
+            </div>
+            <% if (curUser && curUser._id.equals(data.owner._id)) { %>
+
+                <div class="btns">
+                    <a href="/listings/<%= data._id %>/edit" class="btn btn-dark col-1 offset-3">Edit</a>
+                    <form action="/listings/<%= data.id %>?_method=DELETE" method="POST"><button
+                            class="btn btn-dark add-btn offset-5">Delete</button></form>
+
+                </div>
+                <% } %>
+        </div>
+    </div>
+    <!-- If there is any user logged in then render the form -->
+    <div class="col-8 offset-3">
+        <hr>
+        <% if (curUser) { %>
+            <h4>Leave a review</h4>
+            <form action="/listings/<%= data._id %>/review" method="POST" class="mb-3 needs-validation" novalidate>
+                <div class="mb-3 mt-3">
+                    <label for="ratings" class="form-label">Rating</label>
+                    <fieldset class="starability-slot">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[ratings]" value="1" checked
+                            aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[ratings]" value="1" />
+                        <label for="first-rate1" title="Terrible">1 star</label>
+                        <input type="radio" id="first-rate2" name="review[ratings]" value="2" />
+                        <label for="first-rate2" title="Not good">2 stars</label>
+                        <input type="radio" id="first-rate3" name="review[ratings]" value="3" />
+                        <label for="first-rate3" title="Average">3 stars</label>
+                        <input type="radio" id="first-rate4" name="review[ratings]" value="4" />
+                        <label for="first-rate4" title="Very good">4 stars</label>
+                        <input type="radio" id="first-rate5" name="review[ratings]" value="5" />
+                        <label for="first-rate5" title="Amazing">5 stars</label>
+                    </fieldset>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="comment" class="form-label">Comments</label>
+                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control"
+                        required></textarea>
+                    <div class="invalid-feedback">
+                        Please provide a comment.
+                    </div>
+                    <div class="valid-feedback">
+                        Looks good!
+                    </div>
+                </div>
+
+                <br>
+                <button class="btn btn-outline-dark">Submit</button>
+            </form>
+            <hr>
+            <% } %>
+                <p><b>All Reviews</b></p>
+                <div class="row">
+                    <% for( review of data.review) { %>
+                        <div class="card col-5 mb-3 ms-3">
+                            <div class="card-body">
+                                <h5 class="card-text mt-3">
+                                    @<%= review.name.username %>
+                                </h5>
+
+                                <p class="starability-result card-text" data-rating=<%=review.ratings %>>
+                                </p>
+                                <p class="card-text">
+                                    <%= review.comment %>
+                                </p>
+                                <form action="/listings/<%= data._id %>/review/<%= review._id %>?_method=DELETE"
+                                    method="post" class="mb-3"><button class="btn btn-dark btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        <% } %>
+                </div>
+    </div>
